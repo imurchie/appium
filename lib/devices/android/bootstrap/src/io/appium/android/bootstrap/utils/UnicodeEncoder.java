@@ -1,5 +1,7 @@
 package io.appium.android.bootstrap.utils;
 
+import io.appium.android.bootstrap.Logger;
+
 import java.nio.charset.Charset;
 
 
@@ -10,7 +12,14 @@ public class UnicodeEncoder {
 
   public static String encode(final String text) {
     byte[] encoded = text.getBytes(M_UTF7);
-    return new String(encoded, ASCII);
+    String ret = new String(encoded, ASCII);
+
+    if (ret.charAt(ret.length()-1) != text.charAt(text.length()-1) && !ret.endsWith("-")) {
+      // sometimes it comes out without the correct ending
+      Logger.debug("Encoded incorrectly, adding closing tag.");
+      ret = ret + "-"; 
+    }
+    return ret;
   }
 
   public static boolean needsEncoding(final String text) {
